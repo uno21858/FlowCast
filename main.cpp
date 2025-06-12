@@ -7,15 +7,15 @@
 
 using namespace std;
 
-// Excepción personalizada para calificaciones inválidas
+// Excepcion personalizada para calificaciones inválidas
 class CalificacionInvalida : public exception {
 public:
     const char* what() const noexcept override {
-        return "Calificación inválida: Solo puedes dar entre 1 y 5 estrellas";
+        return "Calificacion inválida: Solo puedes dar entre 1 y 5 estrellas";
     }
 };
 
-// Función para validar calificación
+// Funcion para validar calificacion
 int pedirCalificacion() {
     int calif;
     while (true) {
@@ -25,20 +25,20 @@ int pedirCalificacion() {
             if (calif < 1 || calif > 5) throw CalificacionInvalida();
             return calif;
         } catch (const CalificacionInvalida& e) {
-            cout << e.what() << "Calificación inválida. Prueba de nuevo \n: ";
+            cout << e.what() << "Calificacion inválida. Prueba de nuevo \n: ";
             cin.clear();
             cin.ignore(10000, '\n');
         }
     }
 }
 
-// Función para validar opción de menú
+// Funcion para validar opcion de menu
 int pedirOpcion(int min, int max) {
     int opcion;
     while (true) {
         cin >> opcion;
         try {
-            if (opcion < min || opcion > max) throw out_of_range("Opción fuera de rango");
+            if (opcion < min || opcion > max) throw out_of_range("Opcion fuera de rango");
             return opcion;
         } catch (const out_of_range& e) {
             cout << "Error: " << e.what() << ". Prueba de nuevo: ";
@@ -48,7 +48,7 @@ int pedirOpcion(int min, int max) {
     }
 }
 
-// Menú de películas
+// Menu de peliculas
 void mostrarPeliculas(vector<Pelicula>& peliculas) {
     int op;
     do {
@@ -61,24 +61,24 @@ void mostrarPeliculas(vector<Pelicula>& peliculas) {
         cout << "\n==========================\n";
         cout << "------------MENU----------\n";
         cout << "===========================\n";
-        cout << "\n¿Qué quieres hacer?\n";
-        cout << "1. Calificar una película\n";
-        cout << "2. Ver una película\n";
+        cout << "\nQue quieres hacer?\n";
+        cout << "1. Calificar una pelicula\n";
+        cout << "2. Ver una pelicula\n";
         cout << "3. Regresar\n";
-        cout << "Opción: ";
+        cout << "Opcion: ";
         op = pedirOpcion(1, 3);
 
         if (op == 1) {
-            cout << "Selecciona el número de la película que deseas calificar: ";
+            cout << "Selecciona el numero de la pelicula que deseas calificar: ";
             int sel = pedirOpcion(1, peliculas.size());
             int calif = pedirCalificacion();
             peliculas[sel - 1].agregarCalificacion(calif);
-            cout << "¡GRACIAS!\n";
-            cout << "Tu calificación ha sido guardada :)\n";
+            cout << "GRACIAS!\n";
+            cout << "Tu calificacion ha sido guardada :)\n";
 
         }
         else if (op == 2) {
-            cout << "Selecciona el número de la película ^que deseas mirar: ";
+            cout << "Selecciona el numero de la pelicula que deseas mirar: ";
             int sel = pedirOpcion(1, peliculas.size());
             peliculas[sel - 1].verPelicula();
         }
@@ -86,7 +86,7 @@ void mostrarPeliculas(vector<Pelicula>& peliculas) {
     } while (op != 3);
 }
 
-// Menú de series
+// Menu de series
 void mostrarSeries(vector<Serie>& series) {
     int op;
     do {
@@ -100,12 +100,12 @@ void mostrarSeries(vector<Serie>& series) {
         cout << "\n==========================\n";
         cout << "------------MENU----------\n";
         cout << "===========================\n";
-        cout << "\n¿Qué deseas hacer?\n";
+        cout << "\nQue deseas hacer?\n";
         cout << "1. Ir a episodios\n";
         cout << "2. Calificar un episodio\n";
         cout << "3. Ver portada\n";
         cout << "4. Regresar\n";
-        cout << "Opción: ";
+        cout << "Opcion: ";
         op = pedirOpcion(1, 4);
 
         if (op == 1) {
@@ -128,7 +128,7 @@ void mostrarSeries(vector<Serie>& series) {
             int ep = pedirOpcion(1, series[sel - 1].getEpisodios().size());
             int calif = pedirCalificacion();
             series[sel - 1].agregarCalificacion(calif); // Califica la serie completa
-            cout << "¡GRACIAS! Tu calificación ha sido guardada :)\n";
+            cout << "GRACIAS! Tu calificacion ha sido guardada :)\n";
 
         } else if (op == 3) {
             cout << "Selecciona la serie para ver la portada: ";
@@ -139,25 +139,25 @@ void mostrarSeries(vector<Serie>& series) {
     } while (op != 4);
 }
 
-// Función principal
+// Funcion principal
 int main() {
     vector<Pelicula> peliculas = {
-        Pelicula("P001", "Spirited Away", 125, "Fantasía", "Videos/chihiro.mp4"),
-        Pelicula("P002", "My neighbourhood Totoro", 86, "Fantasía", "Videos/totoro.mp4"),
-        Pelicula("P003", "Princess Mononoke", 134, "Acción","Videos/mononoke.mp4"),
-        Pelicula("P004", "Howl's Moving Castle", 119, "Fantasía","Videos/castillo_ambulante.mp4"),
+        Pelicula("P001", "Spirited Away", 125, "Fantasia", "Videos/chihiro.mp4"),
+        Pelicula("P002", "My neighbourhood Totoro", 86, "Fantasia", "Videos/totoro.mp4"),
+        Pelicula("P003", "Princess Mononoke", 134, "Accion","Videos/mononoke.mp4"),
+        Pelicula("P004", "Howl's Moving Castle", 119, "Fantasia","Videos/castillo_ambulante.mp4"),
         Pelicula("P005", "Ponyo", 101, "Aventura","Videos/Ponyo.mp4"),
         Pelicula("P006", "Marnie", 103, "Drama","Videos/Marnie.mp4"),
         Pelicula("P007", "Arrietty", 102, "Aventura", "Videos/Arrietty.mp4"),
         Pelicula("P008", "Your Name", 117, "Romance", "Videos/yn.mp4"),
-        Pelicula("P009", "Silent Voice", 115, "Fantasía", "Videos/sv.mp4"),
+        Pelicula("P009", "Silent Voice", 115, "Fantasia", "Videos/sv.mp4"),
         Pelicula("P010", "Weathering with you", 126, "Romance", "Videos/weather.mp4")
     };
 
     vector<Serie> series;
 
     // Serie 1
-    Serie s1("S001", "Attack on Titan", 1500, "Acción", "portadas/attack.jpg");
+    Serie s1("S001", "Attack on Titan", 1500, "Accion", "portadas/attack.jpg");
     s1.agregarEpisodio(Episodio("Shingeki 1", 1, "episodios/aot_ep1.jpg"));
     s1.agregarEpisodio(Episodio("Shingeki 2", 1, "episodios/aot_ep2.jpg"));
     s1.agregarEpisodio(Episodio("Shingeki 3", 1, "episodios/aot_ep3.jpg"));
@@ -180,14 +180,14 @@ int main() {
     int opcion;
     do {
         cout << "\n=============================\n";
-        cout << "¡BIENVENIDO A FLOWCAST!\n";
+        cout << "BIENVENIDO A FLOWCAST!\n";
         cout << "=============================\n";
-        cout << "¿En qué mood estás hoy?\n";
+        cout << "En que mood estas hoy?\n";
         cout << "1. De pelis :)\n";
         cout << "2. De series :)\n";
-        cout << "3. SALIR\n No quiero ver nada";
+        cout << "3. SALIR\nNo quiero ver nada\n";
         cout << "=============================\n";
-        cout << "Selecciona una opción: ";
+        cout << "Selecciona una opcion: ";
 
         opcion = pedirOpcion(1, 3);
 
@@ -199,7 +199,7 @@ int main() {
                 mostrarSeries(series);
                 break;
             case 3:
-                cout << "¡REGRESA A TERMINAR DE MIRAR PRONTO!\n";
+                cout << "REGRESA A TERMINAR DE MIRAR PRONTO!\n";
                 break;
         }
     } while (opcion != 3);
