@@ -13,18 +13,25 @@ protected:
     std::string titulo;
     int duracion;
     std::string genero;
-    std::vector<int> calificaciones;
+    std::vector<double> calificaciones;
 
 public:
     Video(std::string id, std::string titulo, int duracion, std::string genero);
-    virtual ~Video() {}
+    virtual ~Video() = default;
 
-    // Método virtual puro - hace Video clase abstracta (interfaz)
-    virtual void mostrar() const = 0;
+    // Getters públicos
+    std::string getId() const { return id; }
+    std::string getTitulo() const { return titulo; }
+    int getDuracion() const { return duracion; }
+    std::string getGenero() const { return genero; }
 
-    void agregarCalificacion(int calif);
-    double promedioCalificacion() const;
-    std::string getTitulo() const;
+    // Métodos para calificaciones
+    void agregarCalificacion(double calificacion);
+    double getCalificacion() const;
+    void setCalificacion(double calificacion);
+
+    // Método virtual puro para mostrar información
+    virtual void mostrarInfo() const = 0;
 };
 
-#endif
+#endif // VIDEO_H

@@ -2,41 +2,29 @@
 // Created by mavaa on 6/11/2025.
 //
 
-#include "../include/Serie.h"
-#include <iostream>
-#include <cstdlib>
+#include "Video.h"
+#include <numeric>
+#include <algorithm>
 
-using namespace std;
-
-Serie::Serie(string id, string titulo, int duracion, string genero, string portada)
-    : Video(id, titulo, duracion, genero), portada(portada) {}
-
-void Serie::agregarEpisodio(const Episodio& episodio) {
-    episodios.push_back(episodio);
+Video::Video(std::string id, std::string titulo, int duracion, std::string genero)
+    : id(id), titulo(titulo), duracion(duracion), genero(genero) {
 }
 
-void Serie::mostrar() const {
-    cout << titulo << " (" << genero << ", " << duracion << " min) - ";
-    cout << "Promedio: " << promedioCalificacion() << "/5\n";
-}
-
-void Serie::mostrarEpisodios() const {
-    for (int i = 0; i < episodios.size(); ++i) {
-        cout << i + 1 << ". ";
-        episodios[i].mostrar();
+void Video::agregarCalificacion(double calificacion) {
+    if (calificacion >= 0.0 && calificacion <= 10.0) {
+        calificaciones.push_back(calificacion);
     }
 }
 
-void Serie::verPortada() const {
-    system(("start " + portada).c_str());
+double Video::getCalificacion() const {
+    if (calificaciones.empty()) {
+        return 0.0;
+    }
+    double suma = std::accumulate(calificaciones.begin(), calificaciones.end(), 0.0);
+    return suma / calificaciones.size();
 }
 
-vector<Episodio>& Serie::getEpisodios() {
-    return episodios;
-}
-
-ostream& operator<<(ostream& os, const Serie& serie) {
-    os << serie.titulo << " (" << serie.genero << ", " << serie.duracion << " min)";
-    os << "Promedio: " << serie.promedioCalificacion() << "/5";
-    return os;
+void Video::setCalificacion(double calificacion) {
+    calificaciones.clear();
+    agregarCalificacion(calificacion);
 }

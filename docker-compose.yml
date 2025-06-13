@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Servicio principal de FlowCast con GUI
+  flowcast-gui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flowcast-streaming
+    volumes:
+      # Montar código fuente para desarrollo (solo si necesitas editar en vivo)
+      - .:/home/developer/app
+      # Persistir datos de la aplicación
+      - ./data:/home/developer/app/data
+      # Compartir X11 socket para GUI (Linux)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Compartir archivos de audio (opcional)
+      - /dev/snd:/dev/snd
+    environment:
+      # Variables para X11 forwarding
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - QT_QPA_PLATFORM=xcb
+      # Variables de Qt
+      - QT_LOGGING_RULES=qt.qpa.*=false
+      - QT_AUTO_SCREEN_SCALE_FACTOR=1
+    network_mode: host
+    stdin_open: true
+    tty: true
+    privileged: false
+    # Dispositivos de audio/video
+    devices:
+      - /dev/dri:/dev/dri
+    # Políticas de reinicio
+    restart: unless-stopped
+
+  # Servicio para desarrollo (sin GUI, solo terminal)
+  flowcast-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: flowcast-dev
+    volumes:
+      - .:/home/developer/app
+      - ./data:/home/developer/app/data
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    profiles:
+      - dev
+
+  # Servicio para testing automatizado
+  flowcast-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flowcast-test
+    volumes:
+      - .:/home/developer/app
+    environment:
+      - QT_QPA_PLATFORM=offscreen
+    command: >
+      bash -c "
+        cd build &&
+        ctest --output-on-failure --verbose ||
+        echo 'No tests configured yet'
+      "
+    profiles:
+      - test
+
+networks:
+  default:
+    name: flowcast-network

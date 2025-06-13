@@ -1,0 +1,72 @@
+# Dockerfile.dev - Para ambiente de desarrollo
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Mexico_City
+
+# Instalar herramientas de desarrollo
+RUN apt-get update && apt-get install -y \
+    # Compiladores y herramientas de build
+    build-essential \
+    cmake \
+    git \
+    pkg-config \
+    # Qt6 completo para desarrollo
+    qt6-base-dev \
+    qt6-tools-dev \
+    qt6-base-dev-tools \
+    qtcreator \
+    qt6-qpa-plugins \
+    # Herramientas de desarrollo adicionales
+    gdb \
+    valgrind \
+    clang \
+    clang-format \
+    clang-tidy \
+    # Editores y herramientas de terminal
+    vim \
+    nano \
+    emacs-nox \
+    tree \
+    htop \
+    curl \
+    wget \
+    # Dependencias GUI para testing
+    xvfb \
+    libx11-6 \
+    libxext6 \
+    libxrender1 \
+    # Herramientas de documentación
+    doxygen \
+    graphviz \
+    # Limpieza
+    && rm -rf /var/lib/apt/lists/*
+
+# Configurar Git (opcional - puedes personalizar)
+RUN git config --global user.email "developer@flowcast.local" && \
+    git config --global user.name "FlowCast Developer" && \
+    git config --global init.defaultBranch main
+
+# Crear usuario developer con sudo
+RUN useradd -m -s /bin/bash -G sudo developer && \
+    echo "developer:developer" | chpasswd && \
+    echo "developer ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER developer
+WORKDIR /home/developer/app
+
+# Configurar bashrc personalizado para desarrollo
+RUN echo 'export PS1="\[\033[01;32m\]\u@flowcast-dev\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "' >> ~/.bashrc && \
+    echo 'alias ll="ls -alF"' >> ~/.bashrc && \
+    echo 'alias la="ls -A"' >> ~/.bashrc && \
+    echo 'alias l="ls -CF"' >> ~/.bashrc && \
+    echo 'alias build="cd build && make -j$(nproc)"' >> ~/.bashrc && \
+    echo 'alias rebuild="rm -rf build/* && cd build && cmake .. && make -j$(nproc)"' >> ~/.bashrc && \
+    echo 'alias run="./build/FlowCast"' >> ~/.bashrc
+
+# Configurar variables de entorno
+ENV QT_X11_NO_MITSHM=1
+ENV QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt6/plugins
+
+# Comando por defecto
+CMD ["/bin/bash"]
