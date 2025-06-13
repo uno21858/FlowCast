@@ -1,29 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include <filesystem>
 #include <string>
 #include "include/Pelicula.h"
 #include "include/Serie.h"
 #include "include/Episodio.h"
 
 using namespace std;
-namespace fs = std::filesystem;
 
-// Find and set cwd to the directory named "POO_reto"
-void setProjectRootCWD(const std::string& projectName) {
-    fs::path cwd = fs::current_path();
-    while (cwd.has_parent_path()) {
-        if (cwd.filename() == projectName) {
-            fs::current_path(cwd);
-            return;
-        }
-        cwd = cwd.parent_path();
-    }
-    throw std::runtime_error("Project root folder '" + projectName + "' not found in path.");
-}
-
-// Custom exception for invalid ratings
+// Excepcion personalizada para calificaciones inválidas
 class CalificacionInvalida : public exception {
 public:
     const char* what() const noexcept override {
@@ -31,7 +16,6 @@ public:
     }
 };
 
-// Function to validate rating
 int pedirCalificacion() {
     int calif;
     while (true) {
@@ -48,7 +32,6 @@ int pedirCalificacion() {
     }
 }
 
-// Function to validate menu option
 int pedirOpcion(int min, int max) {
     int opcion;
     while (true) {
@@ -64,7 +47,6 @@ int pedirOpcion(int min, int max) {
     }
 }
 
-// Movies menu
 void mostrarPeliculas(vector<Pelicula>& peliculas) {
     int op;
     do {
@@ -91,18 +73,27 @@ void mostrarPeliculas(vector<Pelicula>& peliculas) {
             peliculas[sel - 1].agregarCalificacion(calif);
             cout << "GRACIAS!\n";
             cout << "Tu calificacion ha sido guardada :)\n";
-
         }
         else if (op == 2) {
             cout << "Selecciona el numero de la pelicula que deseas mirar: ";
             int sel = pedirOpcion(1, peliculas.size());
-            peliculas[sel - 1].verPelicula();
+            // Abrir la pelicula usando la ruta relativa
+            switch (sel) {
+                case 1: system("start ../data/Videos/chihiro.mp4"); break;
+                case 2: system("start ../data/Videos/totoro.mp4"); break;
+                case 3: system("start ../data/Videos/mononoke.mp4"); break;
+                case 4: system("start ../data/Videos/castillo_ambulante.mp4"); break;
+                case 5: system("start ../data/Videos/Ponyo.mp4"); break;
+                case 6: system("start ../data/Videos/Marnie.mp4"); break;
+                case 7: system("start ../data/Videos/Arrietty.mp4"); break;
+                case 8: system("start ../data/Videos/yn.mp4"); break;
+                case 9: system("start ../data/Videos/sv.mp4"); break;
+                case 10: system("start ../data/Videos/weather.mp4"); break;
+            }
         }
-
     } while (op != 3);
 }
 
-// Series menu
 void mostrarSeries(vector<Serie>& series) {
     int op;
     do {
@@ -132,9 +123,22 @@ void mostrarSeries(vector<Serie>& series) {
             cout << "Selecciona el episodio para ver la imagen (0 para regresar): ";
             int ep = pedirOpcion(0, series[sel - 1].getEpisodios().size());
             if (ep != 0) {
-                series[sel - 1].getEpisodios()[ep - 1].verImagen();
+                if (sel == 1) {
+                    if (ep == 1) system("start ../data/episodios/aot_ep1.jpg");
+                    if (ep == 2) system("start ../data/episodios/aot_ep2.jpg");
+                    if (ep == 3) system("start ../data/episodios/aot_ep3.jpg");
+                }
+                if (sel == 2) {
+                    if (ep == 1) system("start ../data/episodios/tg_ep1.jpg");
+                    if (ep == 2) system("start ../data/episodios/tg_ep2.jpg");
+                    if (ep == 3) system("start ../data/episodios/tg_ep3.jpg");
+                }
+                if (sel == 3) {
+                    if (ep == 1) system("start ../data/episodios/sl_ep1.jpg");
+                    if (ep == 2) system("start ../data/episodios/sl_ep2.jpg");
+                    if (ep == 3) system("start ../data/episodios/sl_ep3.jpg");
+                }
             }
-
         } else if (op == 2) {
             cout << "Selecciona la serie para calificar un episodio: ";
             int sel = pedirOpcion(1, series.size());
@@ -143,62 +147,50 @@ void mostrarSeries(vector<Serie>& series) {
             cout << "Selecciona el episodio: ";
             int ep = pedirOpcion(1, series[sel - 1].getEpisodios().size());
             int calif = pedirCalificacion();
-            series[sel - 1].agregarCalificacion(calif); // Califica la serie completa
+            series[sel - 1].agregarCalificacion(calif);
             cout << "GRACIAS! Tu calificacion ha sido guardada :)\n";
-
         } else if (op == 3) {
             cout << "Selecciona la serie para ver la portada: ";
             int sel = pedirOpcion(1, series.size());
-            series[sel - 1].verPortada();
+            if (sel == 1) system("start ../data/portadas/attack.jpg");
+            if (sel == 2) system("start ../data/portadas/Tokyo.jpg");
+            if (sel == 3) system("start ../data/portadas/Solo.jpg");
         }
-
     } while (op != 4);
 }
 
-// Main function
 int main() {
-    // Set working directory to project root "POO_reto"
-    try {
-        setProjectRootCWD("POO_reto");
-    } catch (const std::exception& e) {
-        cerr << "Error: " << e.what() << endl;
-        return 1;
-    }
-
     vector<Pelicula> peliculas = {
-        Pelicula("P001", "Spirited Away", 125, "Fantasia", (fs::current_path() / "Videos/chihiro.mp4").string()),
-        Pelicula("P002", "My neighbourhood Totoro", 86, "Fantasia", (fs::current_path() / "Videos/totoro.mp4").string()),
-        Pelicula("P003", "Princess Mononoke", 134, "Accion", (fs::current_path() / "Videos/mononoke.mp4").string()),
-        Pelicula("P004", "Howl's Moving Castle", 119, "Fantasia", (fs::current_path() / "Videos/castillo_ambulante.mp4").string()),
-        Pelicula("P005", "Ponyo", 101, "Aventura", (fs::current_path() / "Videos/Ponyo.mp4").string()),
-        Pelicula("P006", "Marnie", 103, "Drama", (fs::current_path() / "Videos/Marnie.mp4").string()),
-        Pelicula("P007", "Arrietty", 102, "Aventura", (fs::current_path() / "Videos/Arrietty.mp4").string()),
-        Pelicula("P008", "Your Name", 117, "Romance", (fs::current_path() / "Videos/yn.mp4").string()),
-        Pelicula("P009", "Silent Voice", 115, "Fantasia", (fs::current_path() / "Videos/sv.mp4").string()),
-        Pelicula("P010", "Weathering with you", 126, "Romance", (fs::current_path() / "Videos/weather.mp4").string())
+        Pelicula("P001", "Spirited Away", 125, "Fantasia", "../data/Videos/chihiro.mp4"),
+        Pelicula("P002", "My neighbourhood Totoro", 86, "Fantasia", "../data/Videos/totoro.mp4"),
+        Pelicula("P003", "Princess Mononoke", 134, "Accion","../data/Videos/mononoke.mp4"),
+        Pelicula("P004", "Howl's Moving Castle", 119, "Fantasia","../data/Videos/castillo_ambulante.mp4"),
+        Pelicula("P005", "Ponyo", 101, "Aventura","../data/Videos/Ponyo.mp4"),
+        Pelicula("P006", "Marnie", 103, "Drama","../data/Videos/Marnie.mp4"),
+        Pelicula("P007", "Arrietty", 102, "Aventura", "../data/Videos/Arrietty.mp4"),
+        Pelicula("P008", "Your Name", 117, "Romance", "../data/Videos/yn.mp4"),
+        Pelicula("P009", "Silent Voice", 115, "Fantasia", "../data/Videos/sv.mp4"),
+        Pelicula("P010", "Weathering with you", 126, "Romance", "../data/Videos/weather.mp4")
     };
 
     vector<Serie> series;
 
-    // Serie 1
-    Serie s1("S001", "Attack on Titan", 1500, "Accion", (fs::current_path() / "portadas/attack.jpg").string());
-    s1.agregarEpisodio(Episodio("Shingeki 1", 1, (fs::current_path() / "episodios/aot_ep1.jpg").string()));
-    s1.agregarEpisodio(Episodio("Shingeki 2", 1, (fs::current_path() / "episodios/aot_ep2.jpg").string()));
-    s1.agregarEpisodio(Episodio("Shingeki 3", 1, (fs::current_path() / "episodios/aot_ep3.jpg").string()));
+    Serie s1("S001", "Attack on Titan", 1500, "Accion", "../data/portadas/attack.jpg");
+    s1.agregarEpisodio(Episodio("Shingeki 1", 1, "../data/episodios/aot_ep1.jpg"));
+    s1.agregarEpisodio(Episodio("Shingeki 2", 1, "../data/episodios/aot_ep2.jpg"));
+    s1.agregarEpisodio(Episodio("Shingeki 3", 1, "../data/episodios/aot_ep3.jpg"));
     series.push_back(s1);
 
-    // Serie 2
-    Serie s2("S002", "Tokyo Ghoul", 10000, "Aventura", (fs::current_path() / "portadas/Tokyo.jpg").string());
-    s2.agregarEpisodio(Episodio("Tragedy", 1, (fs::current_path() / "episodios/tg_ep1.jpg").string()));
-    s2.agregarEpisodio(Episodio("Incubation", 1, (fs::current_path() / "episodios/tg_ep2.jpg").string()));
-    s2.agregarEpisodio(Episodio("Dove", 1, (fs::current_path() / "episodios/tg_ep3.jpg").string()));
+    Serie s2("S002", "Tokyo Ghoul", 10000, "Aventura", "../data/portadas/Tokyo.jpg");
+    s2.agregarEpisodio(Episodio("Tragedy", 1, "../data/episodios/tg_ep1.jpg"));
+    s2.agregarEpisodio(Episodio("Incubation", 1, "../data/episodios/tg_ep2.jpg"));
+    s2.agregarEpisodio(Episodio("Dove", 1, "../data/episodios/tg_ep3.jpg"));
     series.push_back(s2);
 
-    // Serie 3
-    Serie s3("S003", "Solo Levening", 10000, "Aventura", (fs::current_path() / "portadas/Solo.jpg").string());
-    s3.agregarEpisodio(Episodio("I´m used to it", 1, (fs::current_path() / "episodios/sl_ep1.jpg").string()));
-    s3.agregarEpisodio(Episodio("If i Had one more chance", 1, (fs::current_path() / "episodios/sl_ep2.jpg").string()));
-    s3.agregarEpisodio(Episodio("It´s like a game", 1, (fs::current_path() / "episodios/sl_ep3.jpg").string()));
+    Serie s3("S003", "Solo Levening", 10000, "Aventura", "../data/portadas/Solo.jpg");
+    s3.agregarEpisodio(Episodio("I´m used to it", 1, "../data/episodios/sl_ep1.jpg"));
+    s3.agregarEpisodio(Episodio("If i Had one more chance", 1, "../data/episodios/sl_ep2.jpg"));
+    s3.agregarEpisodio(Episodio("It´s like a game", 1, "../data/episodios/sl_ep3.jpg"));
     series.push_back(s3);
 
     int opcion;
