@@ -18,6 +18,3 @@ cmake_minimum_required(VERSION 3.31)
         ${HEADERS}
             main.cpp
     )
-
-    # Aquí puedes agregar librerías si las necesitas
-    # target_link_libraries(untitled <library_name>)
