@@ -16,6 +16,8 @@ Correr desde Clion, cuando este sea cargado en clion, dar la opcion de recargar 
 ## Otros IDE
 Ejecutar Cmakelist desde cmd
 ```angular2html
-cmake --build .
+cmake -B build
+cmake --build build
+./build/FlowCast1
 ```
 
